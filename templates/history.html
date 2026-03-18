@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Prediction History — MedAI{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="page-title">Prediction History</div>
+  <div class="page-subtitle">Session-based prediction log (last 20 records)</div>
+</div>
+
+<div class="card">
+  {% if history %}
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Type</th>
+        <th>Diagnosis</th>
+        <th>Confidence</th>
+        <th>Timestamp</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for h in history %}
+      <tr>
+        <td style="font-family:var(--font-mono); color:var(--text-muted)">{{ loop.index }}</td>
+        <td><span class="tag">{{ h.type }}</span></td>
+        <td style="color:var(--text); font-weight:500">{{ h.diagnosis }}</td>
+        <td>
+          <span style="font-family:var(--font-mono); color:var(--accent); font-weight:500">{{ h.probability }}%</span>
+          <div class="prob-bar-wrap" style="width:80px; margin-top:4px">
+            <div class="prob-bar" style="width:{{ h.probability }}%; background:var(--accent)"></div>
+          </div>
+        </td>
+        <td style="font-size:0.78rem; font-family:var(--font-mono); color:var(--text-muted)">{{ h.timestamp }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty-state">
+    <span class="empty-icon">⊜</span>
+    <div class="empty-text">No predictions recorded this session.</div>
+    <div style="margin-top:16px; display:flex; gap:10px; justify-content:center">
+      <a href="/diagnose/symptoms" class="btn btn-secondary">Start Symptom Check</a>
+      <a href="/diagnose/heart" class="btn btn-primary">Heart Assessment</a>
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

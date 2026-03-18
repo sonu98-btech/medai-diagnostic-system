@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}MedAI Diagnostics{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/style.css"/>
+  {% block head %}{% endblock %}
+</head>
+<body>
+ <button id="theme-toggle-btn" class="theme-toggle" onclick="toggleMode()">☀️ Light Mode</button>
+<!-- ── SIDEBAR ───────────────────────────────────────────────── -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <span class="logo-icon">⬡</span>
+    <div>
+      <div class="logo-name">MedAI</div>
+      <div class="logo-sub">Diagnostic System</div>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a href="/" class="nav-item {% if request.path == '/' %}active{% endif %}">
+      <span class="nav-icon">▦</span> Dashboard
+    </a>
+    <div class="nav-section">DIAGNOSE</div>
+    <a href="/diagnose/symptoms" class="nav-item {% if '/symptoms' in request.path %}active{% endif %}">
+      <span class="nav-icon">⊕</span> Symptom Checker
+    </a>
+    <a href="/diagnose/heart" class="nav-item {% if '/heart' in request.path %}active{% endif %}">
+      <span class="nav-icon">♡</span> Heart Disease
+    </a>
+    <div class="nav-section">INSIGHTS</div>
+    <a href="/metrics" class="nav-item {% if '/metrics' in request.path %}active{% endif %}">
+      <span class="nav-icon">◈</span> Model Metrics
+    </a>
+    <a href="/history" class="nav-item {% if '/history' in request.path %}active{% endif %}">
+      <span class="nav-icon">⊜</span> History
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="user-badge">
+      <div class="user-avatar">{{ session.get('username','U')[0].upper() }}</div>
+      <div>
+        <div class="user-name">{{ session.get('username','User') }}</div>
+        <div class="user-role">Healthcare Professional</div>
+      </div>
+    </div>
+    <a href="/logout" class="logout-btn">Sign Out</a>
+  </div>
+</aside>
+
+<!-- ── MAIN CONTENT ───────────────────────────────────────────── -->
+<main class="main-content">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for cat, msg in messages %}
+    <div class="flash flash-{{ cat }}">{{ msg }}</div>
+    {% endfor %}
+  {% endif %}
+  {% endwith %}
+
+  {% block content %}{% endblock %}
+</main>
+
+<script src="/static/js/app.js"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

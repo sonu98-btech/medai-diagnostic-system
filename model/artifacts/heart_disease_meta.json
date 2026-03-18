@@ -1,0 +1,62 @@
+{
+  "feature_cols": [
+    "age",
+    "sex",
+    "cp",
+    "trestbps",
+    "chol",
+    "fbs",
+    "restecg",
+    "thalach",
+    "exang",
+    "oldpeak",
+    "slope",
+    "ca",
+    "thal"
+  ],
+  "feature_names": {
+    "age": "Age",
+    "sex": "Sex (1=Male, 0=Female)",
+    "cp": "Chest Pain Type (0-3)",
+    "trestbps": "Resting Blood Pressure (mmHg)",
+    "chol": "Serum Cholesterol (mg/dL)",
+    "fbs": "Fasting Blood Sugar > 120 mg/dL",
+    "restecg": "Resting ECG Results (0-2)",
+    "thalach": "Maximum Heart Rate",
+    "exang": "Exercise Induced Angina",
+    "oldpeak": "ST Depression (Exercise vs Rest)",
+    "slope": "Slope of Peak Exercise ST Segment",
+    "ca": "Number of Major Vessels (0-3)",
+    "thal": "Thalassemia (1=Normal, 2=Fixed Defect, 3=Reversible)"
+  },
+  "feature_importance": {
+    "age": 0.20752093326588084,
+    "sex": 0.05906543030049986,
+    "cp": 0.14211995197366592,
+    "trestbps": 0.06806709855084306,
+    "chol": 0.0554116743240188,
+    "fbs": 0.009792090041202337,
+    "restecg": 0.0113203087609213,
+    "thalach": 0.05098561534485272,
+    "exang": 0.07048696628257692,
+    "oldpeak": 0.11388343979027818,
+    "slope": 0.013710625221527087,
+    "ca": 0.10965348693867931,
+    "thal": 0.08798237920505377
+  },
+  "metrics": {
+    "accuracy": 0.81,
+    "precision": 0.7857,
+    "recall": 0.7944,
+    "f1": 0.7901,
+    "auc_roc": 0.9121,
+    "cv_auc_mean": 0.9238,
+    "cv_auc_std": 0.013
+  },
+  "classes": [
+    "No Heart Disease",
+    "Heart Disease"
+  ],
+  "model_type": "RandomForestClassifier",
+  "task": "binary_classification"
+}

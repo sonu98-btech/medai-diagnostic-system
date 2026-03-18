@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block title %}Symptom Checker — MedAI{% endblock %}
+
+{% block content %}
+<div class="breadcrumb">
+  <a href="/">Dashboard</a><span class="breadcrumb-sep">›</span>
+  <span>Symptom Checker</span>
+</div>
+
+<div class="page-header">
+  <div class="page-title">Symptom Checker</div>
+  <div class="page-subtitle">Select all presenting symptoms — AI will predict the most likely diagnosis</div>
+</div>
+
+<form method="POST" action="/diagnose/symptoms" id="symptom-form">
+
+  <!-- Patient Info -->
+  <div class="card" style="margin-bottom:20px">
+    <div class="card-title">Patient Information</div>
+    <div class="form-grid-3">
+      <div class="form-group">
+        <label>Patient Age</label>
+        <div style="display:flex; align-items:center; gap:12px">
+          <input type="range" name="age" id="age-range" min="1" max="100" value="40"
+                 oninput="document.getElementById('age-val').textContent=this.value" style="flex:1"/>
+          <span class="range-value" id="age-val">40</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Gender</label>
+        <select name="gender">
+          <option value="Unknown">Prefer not to say</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Selected Symptoms</label>
+        <div style="padding:10px 14px; border:1px solid var(--border); border-radius:8px; background:var(--bg-input)">
+          <span class="stat-value" id="count-display" style="font-size:1.5rem; color:var(--accent2)">0</span>
+          <span style="font-size:0.8rem; color:var(--text-dim)"> symptom(s)</span>
+        </div>
+      </div>
+    </div>
+    <div class="form-group full" style="margin-top:12px">
+      <label>Clinical Notes (optional)</label>
+      <textarea name="note" rows="2" placeholder="Additional clinical observations, onset duration, severity..."></textarea>
+    </div>
+  </div>
+
+  <!-- Symptom Categories -->
+  {% set categories = [
+    ('Fever & Respiratory', ['fever','cough','shortness_of_breath','runny_nose','sore_throat','wheezing']),
+    ('Pain & Discomfort', ['headache','chest_pain','abdominal_pain','back_pain','muscle_pain','joint_pain','burning_sensation_urination']),
+    ('Gastrointestinal', ['nausea','vomiting','diarrhea','heartburn','constipation','appetite_loss']),
+    ('Neurological', ['dizziness','blurred_vision','tremors','insomnia','anxiety','sadness']),
+    ('Metabolic & Endocrine', ['excessive_thirst','frequent_urination','weight_loss','weight_gain','fatigue','cold_intolerance','heat_intolerance']),
+    ('Other Symptoms', ['loss_of_taste','loss_of_smell','palpitations','sweating','skin_rash','bleeding_gums','night_sweats']),
+  ] %}
+
+  {% for cat_name, cat_symptoms in categories %}
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-title" style="font-size:0.8rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted)">
+      {{ cat_name }}
+    </div>
+    <div class="symptom-grid">
+      {% for sym in cat_symptoms %}
+      <div>
+        <input type="checkbox" class="symptom-check" name="symptoms" value="{{ sym }}"
+               id="sym-{{ sym }}" onchange="updateCount()"/>
+        <label class="symptom-label" for="sym-{{ sym }}">
+          <span class="symptom-dot"></span>
+          {{ sym.replace('_', ' ').title() }}
+        </label>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endfor %}
+
+  <!-- Actions -->
+  <div style="display:flex; gap:12px; margin-top:4px">
+    <button type="submit" class="btn btn-primary btn-lg" id="submit-btn" disabled>
+      ⊕ Run Diagnostic Analysis
+    </button>
+    <button type="button" class="btn btn-ghost" onclick="clearAll()">Clear All</button>
+  </div>
+
+</form>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function updateCount() {
+  const checked = document.querySelectorAll('.symptom-check:checked').length;
+  document.getElementById('count-display').textContent = checked;
+  document.getElementById('submit-btn').disabled = checked === 0;
+}
+function clearAll() {
+  document.querySelectorAll('.symptom-check').forEach(c => c.checked = false);
+  updateCount();
+}
+</script>
+{% endblock %}

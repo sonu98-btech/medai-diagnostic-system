@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block title %}Model Metrics — MedAI{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="page-title">Model Performance Report</div>
+  <div class="page-subtitle">Comprehensive evaluation metrics from training validation</div>
+</div>
+
+<div class="grid-2" style="margin-bottom:24px">
+  <!-- Heart Disease Model -->
+  <div class="card" style="border-top:2px solid var(--accent)">
+    <div class="card-title">♡ Heart Disease Classifier</div>
+    <div class="grid-2" style="margin-bottom:20px">
+      <div>
+        <div class="card-label">Accuracy</div>
+        <div style="font-family:var(--font-display); font-size:2rem; font-weight:700; color:var(--accent)">
+          {{ "%.1f"|format(metrics.heart_disease.accuracy * 100) }}%
+        </div>
+      </div>
+      <div>
+        <div class="card-label">AUC-ROC</div>
+        <div style="font-family:var(--font-display); font-size:2rem; font-weight:700; color:var(--accent2)">
+          {{ "%.4f"|format(metrics.heart_disease.auc_roc) }}
+        </div>
+      </div>
+    </div>
+    <table>
+      <tbody>
+        <tr><td>Precision</td><td style="font-family:var(--font-mono); color:var(--text)">{{ metrics.heart_disease.precision }}</td></tr>
+        <tr><td>Recall</td><td style="font-family:var(--font-mono); color:var(--text)">{{ metrics.heart_disease.recall }}</td></tr>
+        <tr><td>F1 Score</td><td style="font-family:var(--font-mono); color:var(--text)">{{ metrics.heart_disease.f1 }}</td></tr>
+        <tr><td>CV AUC Mean</td><td style="font-family:var(--font-mono); color:var(--text)">{{ metrics.heart_disease.cv_auc_mean }}</td></tr>
+        <tr><td>CV AUC Std</td><td style="font-family:var(--font-mono); color:var(--text)">{{ metrics.heart_disease.cv_auc_std }}</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:20px; display:flex; gap:10px; flex-wrap:wrap">
+      <img src="/static/img/plots/hd_roc.png" style="height:180px; border-radius:8px; border:1px solid var(--border)"/>
+      <img src="/static/img/plots/hd_confusion.png" style="height:180px; border-radius:8px; border:1px solid var(--border)"/>
+    </div>
+    <img src="/static/img/plots/hd_importance.png" style="width:100%; margin-top:10px; border-radius:8px; border:1px solid var(--border)"/>
+  </div>
+
+  <!-- Symptom Disease Model -->
+  <div class="card" style="border-top:2px solid var(--accent2)">
+    <div class="card-title">⊕ Symptom-Disease Classifier</div>
+    <div class="grid-2" style="margin-bottom:20px">
+      <div>
+        <div class="card-label">Accuracy</div>
+        <div style="font-family:var(--font-display); font-size:2rem; font-weight:700; color:var(--accent2)">
+          {{ "%.1f"|format(metrics.symptom_disease.accuracy * 100) }}%
+        </div>
+      </div>
+      <div>
+        <div class="card-label">Macro F1</div>
+        <div style="font-family:var(--font-display); font-size:2rem; font-weight:700; color:var(--green)">
+          {{ "%.4f"|format(metrics.symptom_disease.macro_f1) }}
+        </div>
+      </div>
+    </div>
+    <table>
+      <tbody>
+        <tr><td>Macro Precision</td><td style="font-family:var(--font-mono); color:var(--text)">{{ metrics.symptom_disease.macro_precision }}</td></tr>
+        <tr><td>Macro Recall</td><td style="font-family:var(--font-mono); color:var(--text)">{{ metrics.symptom_disease.macro_recall }}</td></tr>
+        <tr><td>Disease Classes</td><td style="font-family:var(--font-mono); color:var(--text)">15</td></tr>
+        <tr><td>CV Accuracy Mean</td><td style="font-family:var(--font-mono); color:var(--text)">{{ metrics.symptom_disease.cv_acc_mean }}</td></tr>
+        <tr><td>CV Accuracy Std</td><td style="font-family:var(--font-mono); color:var(--text)">{{ metrics.symptom_disease.cv_acc_std }}</td></tr>
+      </tbody>
+    </table>
+    <img src="/static/img/plots/sd_importance.png" style="width:100%; margin-top:20px; border-radius:8px; border:1px solid var(--border)"/>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Model Architecture</div>
+  <div class="grid-2">
+    <div>
+      <div class="card-label" style="margin-bottom:10px">Algorithm</div>
+      <div style="font-size:0.875rem; color:var(--text-dim); line-height:1.7">
+        Both models use <strong style="color:var(--text)">Random Forest Classifier</strong> from scikit-learn,
+        wrapped in a sklearn Pipeline with median/mode imputation and feature scaling.<br><br>
+        Training used 5-fold <strong style="color:var(--text)">Stratified K-Fold cross-validation</strong> to ensure
+        generalization across class imbalances. Class weights balanced for fair minority-class learning.
+      </div>
+    </div>
+    <div>
+      <div class="card-label" style="margin-bottom:10px">Hyperparameters</div>
+      <table>
+        <thead><tr><th>Parameter</th><th>Heart Disease</th><th>Symptom</th></tr></thead>
+        <tbody>
+          <tr><td>n_estimators</td><td style="font-family:var(--font-mono)">200</td><td style="font-family:var(--font-mono)">300</td></tr>
+          <tr><td>max_depth</td><td style="font-family:var(--font-mono)">8</td><td style="font-family:var(--font-mono)">12</td></tr>
+          <tr><td>min_samples_split</td><td style="font-family:var(--font-mono)">10</td><td style="font-family:var(--font-mono)">5</td></tr>
+          <tr><td>class_weight</td><td style="font-family:var(--font-mono)">balanced</td><td style="font-family:var(--font-mono)">balanced</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

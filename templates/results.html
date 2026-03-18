@@ -1,0 +1,219 @@
+{% extends "base.html" %}
+{% block title %}Diagnosis Results — MedAI{% endblock %}
+
+{% block content %}
+<div class="breadcrumb">
+  <a href="/">Dashboard</a><span class="breadcrumb-sep">›</span>
+  {% if mode == 'symptom' %}
+  <a href="/diagnose/symptoms">Symptom Checker</a>
+  {% else %}
+  <a href="/diagnose/heart">Heart Assessment</a>
+  {% endif %}
+  <span class="breadcrumb-sep">›</span>
+  <span>Results</span>
+</div>
+
+<!-- ── HERO RESULT ───────────────────────────────────────────── -->
+<div class="result-hero">
+  <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:20px">
+    <div style="flex:1">
+      <div style="margin-bottom:12px">
+        <span class="risk-badge risk-{{ result.risk_id }}">
+          {% if result.risk_id == 'low' %}▲ Low Risk
+          {% elif result.risk_id == 'medium' %}▲ Moderate Risk
+          {% elif result.risk_id == 'high' %}▲ High Risk
+          {% else %}▲ Critical Risk{% endif %}
+        </span>
+      </div>
+      <span class="result-icon">{{ result.icon }}</span>
+      {% if mode == 'symptom' %}
+      <div class="result-diagnosis">{{ result.primary_diagnosis }}</div>
+      {% else %}
+      <div class="result-diagnosis">{{ result.diagnosis }}</div>
+      {% endif %}
+      <div class="result-prob">Confidence: {{ result.probability }}% · {{ result.timestamp }}</div>
+      <div class="prob-bar-wrap" style="width:200px; margin-top:8px; margin-bottom:16px">
+        <div class="prob-bar" style="width:{{ result.probability }}%; background:{{ result.risk_color }}"></div>
+      </div>
+      <div style="display:flex; gap:12px; flex-wrap:wrap">
+        <div style="background:var(--bg-elevated); border:1px solid var(--border); border-radius:8px; padding:10px 16px">
+          <div style="font-size:0.65rem; font-family:var(--font-mono); color:var(--text-muted); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:4px">Refer To</div>
+          <div style="font-size:0.875rem; color:var(--text)">{{ result.specialist }}</div>
+        </div>
+        <div style="background:var(--bg-elevated); border:1px solid var(--border); border-radius:8px; padding:10px 16px">
+          <div style="font-size:0.65rem; font-family:var(--font-mono); color:var(--text-muted); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:4px">Urgency</div>
+          <div style="font-size:0.875rem; color:var(--amber)">{{ result.urgency }}</div>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:right">
+      <div class="prob-large">{{ result.probability }}%</div>
+      <div style="font-size:0.75rem; color:var(--text-muted); font-family:var(--font-mono); margin-top:4px">confidence</div>
+    </div>
+  </div>
+</div>
+
+<div class="grid-2">
+
+  <!-- ── AI EXPLAINABILITY ─────────────────────────────────────── -->
+  <div class="card">
+    <div class="card-title">AI Explainability (Top Contributing Features)</div>
+    <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:16px">
+      Feature importance scores explaining which inputs most influenced this prediction.
+    </p>
+    {% if result.explanation %}
+      {% set max_contrib = result.explanation[0].contribution %}
+      {% for exp in result.explanation %}
+      <div class="expl-item">
+        <div class="expl-name">{{ exp.feature }}</div>
+        <div class="expl-bar-wrap">
+          <div class="expl-bar" style="width:{{ (exp.contribution / max_contrib * 100)|int }}%"></div>
+        </div>
+        <div class="expl-val">{{ "%.4f"|format(exp.contribution) }}</div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <div style="color:var(--text-muted); font-size:0.85rem">No feature explanation available.</div>
+    {% endif %}
+    <div style="margin-top:16px; padding:12px; background:var(--bg-elevated); border-radius:8px; border:1px solid var(--border)">
+      <div style="font-size:0.7rem; color:var(--text-muted); font-family:var(--font-mono)">
+        METHOD: Random Forest Feature Importance × Input Activation<br>
+        Technique: SHAP-compatible local explanation
+      </div>
+    </div>
+  </div>
+
+  <!-- ── DIFFERENTIAL / INPUT SUMMARY ──────────────────────────── -->
+  <div>
+    {% if mode == 'symptom' %}
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-title">Differential Diagnosis</div>
+      {% for diff in result.differential %}
+      <div class="differential-item">
+        <span class="diff-icon">{{ diff.icon }}</span>
+        <div>
+          <div class="diff-name">{{ diff.disease }}</div>
+          <div style="font-size:0.75rem; color:var(--text-muted)">{{ diff.specialist }}</div>
+        </div>
+        <div class="diff-prob">{{ diff.probability }}%</div>
+        <div class="prob-bar-wrap" style="width:80px">
+          <div class="prob-bar" style="width:{{ diff.probability }}%; background:{{ diff.risk_color }}"></div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="card">
+      <div class="card-title">Reported Symptoms ({{ result.active_symptoms|length }})</div>
+      <div style="display:flex; flex-wrap:wrap; gap:6px">
+        {% for sym in result.active_symptoms %}
+        <span style="padding:4px 12px; border-radius:99px; background:rgba(74,158,255,0.1); border:1px solid rgba(74,158,255,0.2); font-size:0.78rem; color:var(--accent2)">
+          {{ sym.replace('_',' ').title() }}
+        </span>
+        {% endfor %}
+      </div>
+    </div>
+    {% else %}
+    <!-- Heart Disease: Show input values -->
+    <div class="card">
+      <div class="card-title">Clinical Input Summary</div>
+      {% set field_labels = {
+        'age': 'Age', 'sex': 'Sex', 'cp': 'Chest Pain Type',
+        'trestbps': 'Resting BP (mmHg)', 'chol': 'Cholesterol (mg/dL)',
+        'fbs': 'Fasting BS > 120', 'restecg': 'Resting ECG',
+        'thalach': 'Max Heart Rate', 'exang': 'Exercise Angina',
+        'oldpeak': 'ST Depression', 'slope': 'ST Slope',
+        'ca': 'Major Vessels', 'thal': 'Thalassemia'
+      } %}
+      <table>
+        <thead><tr><th>Parameter</th><th>Value</th></tr></thead>
+        <tbody>
+          {% for key, label in field_labels.items() %}
+          <tr>
+            <td>{{ label }}</td>
+            <td style="font-family:var(--font-mono); color:var(--text)">{{ result.input_data.get(key, '—') }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- ── MODEL PERFORMANCE ──────────────────────────────────────── -->
+<div class="card" style="margin-top:20px">
+  <div class="card-title">Model Performance (Validation Set)</div>
+  <div class="grid-4">
+    <div>
+      <div class="card-label">Accuracy</div>
+      <div style="font-family:var(--font-display); font-size:1.5rem; font-weight:700">
+        {{ "%.1f"|format(result.metrics.accuracy * 100) }}%
+      </div>
+    </div>
+    {% if result.metrics.get('auc_roc') %}
+    <div>
+      <div class="card-label">AUC-ROC</div>
+      <div style="font-family:var(--font-display); font-size:1.5rem; font-weight:700">
+        {{ "%.4f"|format(result.metrics.auc_roc) }}
+      </div>
+    </div>
+    <div>
+      <div class="card-label">Precision</div>
+      <div style="font-family:var(--font-display); font-size:1.5rem; font-weight:700">
+        {{ "%.4f"|format(result.metrics.precision) }}
+      </div>
+    </div>
+    <div>
+      <div class="card-label">Recall</div>
+      <div style="font-family:var(--font-display); font-size:1.5rem; font-weight:700">
+        {{ "%.4f"|format(result.metrics.recall) }}
+      </div>
+    </div>
+    {% else %}
+    <div>
+      <div class="card-label">Macro F1</div>
+      <div style="font-family:var(--font-display); font-size:1.5rem; font-weight:700">
+        {{ "%.4f"|format(result.metrics.macro_f1) }}
+      </div>
+    </div>
+    <div>
+      <div class="card-label">Macro Precision</div>
+      <div style="font-family:var(--font-display); font-size:1.5rem; font-weight:700">
+        {{ "%.4f"|format(result.metrics.macro_precision) }}
+      </div>
+    </div>
+    <div>
+      <div class="card-label">Macro Recall</div>
+      <div style="font-family:var(--font-display); font-size:1.5rem; font-weight:700">
+        {{ "%.4f"|format(result.metrics.macro_recall) }}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- ── CLINICAL NOTES ─────────────────────────────────────────── -->
+{% if result.note %}
+<div class="card" style="margin-top:20px">
+  <div class="card-title">Physician Notes</div>
+  <p style="font-size:0.875rem; color:var(--text-dim); line-height:1.6">{{ result.note }}</p>
+</div>
+{% endif %}
+
+<!-- ── DISCLAIMER ─────────────────────────────────────────────── -->
+<div class="disclaimer" style="margin-top:20px">
+  <strong>⚠ Clinical Disclaimer:</strong> {{ result.disclaimer }}
+</div>
+
+<!-- ── ACTIONS ────────────────────────────────────────────────── -->
+<div style="display:flex; gap:12px; margin-top:24px">
+  {% if mode == 'symptom' %}
+  <a href="/diagnose/symptoms" class="btn btn-secondary">⊕ New Symptom Check</a>
+  {% else %}
+  <a href="/diagnose/heart" class="btn btn-primary">♡ New Assessment</a>
+  {% endif %}
+  <a href="/" class="btn btn-ghost">← Dashboard</a>
+  <button onclick="window.print()" class="btn btn-ghost">⎙ Print Report</button>
+</div>
+{% endblock %}

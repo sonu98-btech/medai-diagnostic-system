@@ -1,0 +1,24 @@
+2026-03-17 22:15:00,734 | {"timestamp": "2026-03-17T16:45:00.734663Z", "event": "LOGIN_FAILURE", "user": "55d2b5040b3784b3", "ip": "12ca17b49af2", "details": {}}
+2026-03-17 22:15:55,041 | {"timestamp": "2026-03-17T16:45:55.040795Z", "event": "LOGIN_SUCCESS", "user": "72f4be89d6ebab14", "ip": "12ca17b49af2", "details": {}}
+2026-03-17 22:17:46,772 | {"timestamp": "2026-03-17T16:47:46.772310Z", "event": "SYMPTOM_PREDICTION", "user": "72f4be89d6ebab14", "ip": "12ca17b49af2", "details": {"num_symptoms": 9, "primary": "Influenza"}}
+2026-03-17 22:20:23,905 | {"timestamp": "2026-03-17T16:50:23.905659Z", "event": "SYMPTOM_PREDICTION", "user": "72f4be89d6ebab14", "ip": "12ca17b49af2", "details": {"num_symptoms": 5, "primary": "Dengue Fever"}}
+2026-03-17 22:24:53,394 | {"timestamp": "2026-03-17T16:54:53.394325Z", "event": "HEART_PREDICTION", "user": "72f4be89d6ebab14", "ip": "12ca17b49af2", "details": {"diagnosis": "No Heart Disease", "probability": 40.9}}
+2026-03-17 22:26:31,934 | {"timestamp": "2026-03-17T16:56:31.933976Z", "event": "LOGIN_SUCCESS", "user": "72f4be89d6ebab14", "ip": "12ca17b49af2", "details": {}}
+2026-03-18 20:49:36,149 | {"timestamp": "2026-03-18T15:19:36.149680Z", "event": "LOGIN_SUCCESS", "user": "72f4be89d6ebab14", "ip": "12ca17b49af2", "details": {}}
+2026-03-18 20:49:37,411 | {"timestamp": "2026-03-18T15:19:37.411580Z", "event": "LOGIN_SUCCESS", "user": "72f4be89d6ebab14", "ip": "12ca17b49af2", "details": {}}
+2026-03-18 20:49:37,695 | {"timestamp": "2026-03-18T15:19:37.695509Z", "event": "LOGIN_SUCCESS", "user": "72f4be89d6ebab14", "ip": "12ca17b49af2", "details": {}}
+2026-03-18 20:49:39,630 | {"timestamp": "2026-03-18T15:19:39.630911Z", "event": "LOGIN_SUCCESS", "user": "72f4be89d6ebab14", "ip": "12ca17b49af2", "details": {}}
+2026-03-18 20:49:47,352 | {"timestamp": "2026-03-18T15:19:47.352858Z", "event": "LOGIN_SUCCESS", "user": "72f4be89d6ebab14", "ip": "12ca17b49af2", "details": {}}
+2026-03-18 21:11:49,050 | {"timestamp": "2026-03-18T15:41:49.050810Z", "event": "HEART_PREDICTION", "user": "72f4be89d6ebab14", "ip": "12ca17b49af2", "details": {"diagnosis": "No Heart Disease", "probability": 23.6}}
+2026-03-18 21:11:56,513 | {"timestamp": "2026-03-18T15:41:56.513797Z", "event": "HEART_PREDICTION", "user": "72f4be89d6ebab14", "ip": "12ca17b49af2", "details": {"diagnosis": "No Heart Disease", "probability": 23.6}}
+2026-03-18 21:12:46,824 | {"timestamp": "2026-03-18T15:42:46.824527Z", "event": "LOGOUT", "user": "72f4be89d6ebab14", "ip": "12ca17b49af2", "details": {}}
+2026-03-18 21:14:25,081 | {"timestamp": "2026-03-18T15:44:25.081115Z", "event": "LOGIN_SUCCESS", "user": "72f4be89d6ebab14", "ip": "12ca17b49af2", "details": {}}
+2026-03-18 21:14:40,769 | {"timestamp": "2026-03-18T15:44:40.769204Z", "event": "SYMPTOM_PREDICTION", "user": "72f4be89d6ebab14", "ip": "12ca17b49af2", "details": {"num_symptoms": 2, "primary": "Hypertension"}}
+2026-03-18 21:23:31,818 | {"timestamp": "2026-03-18T15:53:31.818928Z", "event": "LOGOUT", "user": "72f4be89d6ebab14", "ip": "12ca17b49af2", "details": {}}
+2026-03-18 21:23:49,393 | {"timestamp": "2026-03-18T15:53:49.393286Z", "event": "LOGIN_SUCCESS", "user": "72f4be89d6ebab14", "ip": "12ca17b49af2", "details": {}}
+2026-03-18 21:41:30,395 | {"timestamp": "2026-03-18T16:11:30.395342Z", "event": "LOGOUT", "user": "72f4be89d6ebab14", "ip": "12ca17b49af2", "details": {}}
+2026-03-18 21:41:43,468 | {"timestamp": "2026-03-18T16:11:43.468236Z", "event": "LOGIN_SUCCESS", "user": "72f4be89d6ebab14", "ip": "12ca17b49af2", "details": {}}
+2026-03-18 21:43:19,079 | {"timestamp": "2026-03-18T16:13:19.079766Z", "event": "LOGIN_SUCCESS", "user": "72f4be89d6ebab14", "ip": "12ca17b49af2", "details": {}}
+2026-03-18 21:44:24,437 | {"timestamp": "2026-03-18T16:14:24.437382Z", "event": "SYMPTOM_PREDICTION", "user": "72f4be89d6ebab14", "ip": "12ca17b49af2", "details": {"num_symptoms": 15, "primary": "Influenza"}}
+2026-03-18 21:51:02,291 | {"timestamp": "2026-03-18T16:21:02.291322Z", "event": "SYMPTOM_PREDICTION", "user": "72f4be89d6ebab14", "ip": "12ca17b49af2", "details": {"num_symptoms": 4, "primary": "Appendicitis"}}
+2026-03-18 21:51:26,186 | {"timestamp": "2026-03-18T16:21:26.186906Z", "event": "LOGOUT", "user": "72f4be89d6ebab14", "ip": "12ca17b49af2", "details": {}}

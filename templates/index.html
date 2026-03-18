@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — MedAI{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div style="display:flex; justify-content:space-between; align-items:flex-start">
+    <div>
+      <div class="page-title">Clinical Dashboard</div>
+      <div class="page-subtitle">Welcome back, {{ username }} — AI-powered diagnostic decision support</div>
+    </div>
+    <div style="display:none;gap:10px">
+      <a href="/diagnose/symptoms" class="btn btn-secondary">⊕ Symptom Check</a>
+      <a href="/diagnose/heart" class="btn btn-primary">♡ Heart Analysis</a>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODEL PERFORMANCE ─────────────────────────────────────── -->
+<div style="margin-bottom:8px; font-size:0.65rem; font-family:var(--font-mono); text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted)">Model Performance</div>
+<div class="grid-4" style="margin-bottom:28px">
+  <div class="stat-card">
+    <div class="stat-label">HD Accuracy</div>
+    <div class="stat-value">{{ "%.1f"|format(metrics.heart_disease.accuracy * 100) }}<span style="font-size:1rem">%</span></div>
+    <div class="stat-unit">Heart Disease Classifier</div>
+  </div>
+  <div class="stat-card blue">
+    <div class="stat-label">HD AUC-ROC</div>
+    <div class="stat-value">{{ "%.3f"|format(metrics.heart_disease.auc_roc) }}</div>
+    <div class="stat-unit">Area Under Curve</div>
+  </div>
+  <div class="stat-card green">
+    <div class="stat-label">SD Accuracy</div>
+    <div class="stat-value">{{ "%.1f"|format(metrics.symptom_disease.accuracy * 100) }}<span style="font-size:1rem">%</span></div>
+    <div class="stat-unit">Symptom-Disease Classifier</div>
+  </div>
+  <div class="stat-card amber">
+    <div class="stat-label">SD Macro F1</div>
+    <div class="stat-value">{{ "%.3f"|format(metrics.symptom_disease.macro_f1) }}</div>
+    <div class="stat-unit">15 Disease Classes</div>
+  </div>
+</div>
+
+<!-- ── DIAGNOSTIC MODULES ────────────────────────────────────── -->
+<div style="margin-bottom:8px; font-size:0.65rem; font-family:var(--font-mono); text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted)">Diagnostic Modules</div>
+<div class="grid-2" style="margin-bottom:28px">
+
+  <div class="card" style="border-top:2px solid var(--accent2)">
+    <div style="font-size:2rem; margin-bottom:12px">⊕</div>
+    <div class="card-title" style="font-size:1.2rem; margin-bottom:8px">Symptom Checker</div>
+    <p style="font-size:0.85rem; color:var(--text-dim); line-height:1.6; margin-bottom:16px">
+      Select patient-reported symptoms from a curated clinical list. AI predicts 
+      the most likely diagnosis from 15 disease categories with differential analysis.
+    </p>
+    <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px">
+      <span class="tag">15 Disease Classes</span>
+      <span class="tag">Random Forest</span>
+      <span class="tag">SHAP Explanations</span>
+    </div>
+    <a href="/diagnose/symptoms" class="btn btn-secondary">Start Symptom Check →</a>
+  </div>
+
+  <div class="card" style="border-top:2px solid var(--accent)">
+    <div style="font-size:2rem; margin-bottom:12px">♡</div>
+    <div class="card-title" style="font-size:1.2rem; margin-bottom:8px">Heart Disease Predictor</div>
+    <p style="font-size:0.85rem; color:var(--text-dim); line-height:1.6; margin-bottom:16px">
+      Enter clinical biomarkers (ECG results, cholesterol, blood pressure, etc.) for 
+      binary cardiovascular risk classification with probability scoring.
+    </p>
+    <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px">
+      <span class="tag">13 Clinical Features</span>
+      <span class="tag">UCI Dataset</span>
+      <span class="tag">91% AUC-ROC</span>
+    </div>
+    <a href="/diagnose/heart" class="btn btn-primary">Run Assessment →</a>
+  </div>
+</div>
+
+<!-- ── METRICS + HISTORY ─────────────────────────────────────── -->
+<div class="grid-2">
+  <!-- Model Metrics Detail -->
+  <div class="card">
+    <div class="card-title">Model Evaluation Metrics</div>
+    <table>
+      <thead>
+        <tr>
+          <th>Model</th>
+          <th>Precision</th>
+          <th>Recall</th>
+          <th>F1</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong style="color:var(--text)">Heart Disease</strong></td>
+          <td><span class="metric-pill good">{{ "%.3f"|format(metrics.heart_disease.precision) }}</span></td>
+          <td><span class="metric-pill good">{{ "%.3f"|format(metrics.heart_disease.recall) }}</span></td>
+          <td><span class="metric-pill good">{{ "%.3f"|format(metrics.heart_disease.f1) }}</span></td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--text)">Symptom-Disease</strong></td>
+          <td><span class="metric-pill">{{ "%.3f"|format(metrics.symptom_disease.macro_precision) }}</span></td>
+          <td><span class="metric-pill">{{ "%.3f"|format(metrics.symptom_disease.macro_recall) }}</span></td>
+          <td><span class="metric-pill good">{{ "%.3f"|format(metrics.symptom_disease.macro_f1) }}</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="margin-top:16px; display:flex; gap:8px">
+      <a href="/metrics" class="btn btn-ghost" style="font-size:0.8rem; padding:8px 16px">View Full Report →</a>
+    </div>
+  </div>
+
+  <!-- Recent Predictions -->
+  <div class="card">
+    <div class="card-title">Recent Predictions</div>
+    {% if history %}
+    <table>
+      <thead>
+        <tr><th>Type</th><th>Diagnosis</th><th>Prob.</th><th>Time</th></tr>
+      </thead>
+      <tbody>
+        {% for h in history[:5] %}
+        <tr>
+          <td><span class="tag">{{ h.type }}</span></td>
+          <td style="color:var(--text)">{{ h.diagnosis }}</td>
+          <td style="font-family:var(--font-mono); color:var(--accent)">{{ h.probability }}%</td>
+          <td style="font-size:0.75rem; color:var(--text-muted); font-family:var(--font-mono)">{{ h.timestamp[-8:] }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <div style="margin-top:16px">
+      <a href="/history" class="btn btn-ghost" style="font-size:0.8rem; padding:8px 16px">View All History →</a>
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <span class="empty-icon">⊜</span>
+      <div class="empty-text">No predictions yet this session.</div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- ── SYSTEM INFO ────────────────────────────────────────────── -->
+<div style="margin-top:24px; padding:16px 20px; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius); display:flex; gap:24px; align-items:center">
+  <div style="font-size:0.75rem; color:var(--text-muted); font-family:var(--font-mono)">
+    ⬡ MedAI v1.0.0 &nbsp;|&nbsp; 🔒 HIPAA-Compliant Audit Logging &nbsp;|&nbsp; 🛡 Session Encrypted &nbsp;|&nbsp; ⚡ Real-time Inference
+  </div>
+  <div style="flex:1; text-align:right">
+    <a href="/metrics" style="font-size:0.75rem; color:var(--accent2); font-family:var(--font-mono); text-decoration:none">View Model Docs →</a>
+  </div>
+</div>
+{% endblock %}
+
+
+

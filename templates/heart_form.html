@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% block title %}Heart Disease Assessment — MedAI{% endblock %}
+
+{% block content %}
+<div class="breadcrumb">
+  <a href="/">Dashboard</a><span class="breadcrumb-sep">›</span>
+  <span>Heart Disease Assessment</span>
+</div>
+
+<div class="page-header">
+  <div class="page-title">Heart Disease Risk Assessment</div>
+  <div class="page-subtitle">Enter clinical biomarkers for cardiovascular risk prediction (UCI Cleveland Protocol)</div>
+</div>
+
+<form method="POST" action="/diagnose/heart">
+
+  <!-- Demographics -->
+  <div class="card" style="margin-bottom:20px">
+    <div class="card-title">Patient Demographics</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Age (years)</label>
+        <input type="number" name="age" placeholder="29–77" min="18" max="100" value="55" required/>
+      </div>
+      <div class="form-group">
+        <label>Biological Sex</label>
+        <select name="sex">
+          <option value="1">Male</option>
+          <option value="0">Female</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chest Pain & Symptoms -->
+  <div class="card" style="margin-bottom:20px">
+    <div class="card-title">Symptoms & Chest Pain</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Chest Pain Type</label>
+        <select name="cp">
+          <option value="0">0 — Typical Angina</option>
+          <option value="1">1 — Atypical Angina</option>
+          <option value="2">2 — Non-Anginal Pain</option>
+          <option value="3">3 — Asymptomatic</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Exercise Induced Angina</label>
+        <select name="exang">
+          <option value="0">No</option>
+          <option value="1">Yes</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Vital Signs -->
+  <div class="card" style="margin-bottom:20px">
+    <div class="card-title">Vital Signs & Lab Results</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Resting Blood Pressure (mmHg)</label>
+        <input type="number" name="trestbps" placeholder="94–200" min="80" max="250" value="130" required/>
+      </div>
+      <div class="form-group">
+        <label>Serum Cholesterol (mg/dL)</label>
+        <input type="number" name="chol" placeholder="100–600" min="100" max="600" value="240" required/>
+      </div>
+      <div class="form-group">
+        <label>Fasting Blood Sugar &gt; 120 mg/dL</label>
+        <select name="fbs">
+          <option value="0">No (≤ 120 mg/dL)</option>
+          <option value="1">Yes (&gt; 120 mg/dL)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Max Heart Rate Achieved (bpm)</label>
+        <input type="number" name="thalach" placeholder="71–202" min="60" max="220" value="150" required/>
+      </div>
+    </div>
+  </div>
+
+  <!-- ECG & Imaging -->
+  <div class="card" style="margin-bottom:20px">
+    <div class="card-title">ECG & Cardiac Imaging</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Resting ECG Results</label>
+        <select name="restecg">
+          <option value="0">0 — Normal</option>
+          <option value="1">1 — ST-T Wave Abnormality</option>
+          <option value="2">2 — Left Ventricular Hypertrophy</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>ST Depression (oldpeak)</label>
+        <input type="number" name="oldpeak" placeholder="0.0–6.2" step="0.1" min="0" max="10" value="1.0" required/>
+      </div>
+      <div class="form-group">
+        <label>Slope of Peak Exercise ST</label>
+        <select name="slope">
+          <option value="0">0 — Upsloping</option>
+          <option value="1">1 — Flat</option>
+          <option value="2">2 — Downsloping</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Major Vessels (0–3, Fluoroscopy)</label>
+        <select name="ca">
+          <option value="0">0 vessels</option>
+          <option value="1">1 vessel</option>
+          <option value="2">2 vessels</option>
+          <option value="3">3 vessels</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Thalassemia</label>
+        <select name="thal">
+          <option value="1">1 — Normal</option>
+          <option value="2">2 — Fixed Defect</option>
+          <option value="3">3 — Reversible Defect</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notes -->
+  <div class="card" style="margin-bottom:24px">
+    <div class="card-title">Clinical Notes</div>
+    <div class="form-group">
+      <label>Physician Notes (optional)</label>
+      <textarea name="note" rows="2" placeholder="Family history, current medications, other relevant observations..."></textarea>
+    </div>
+  </div>
+
+  <div style="display:flex; gap:12px">
+    <button type="submit" class="btn btn-primary btn-lg">♡ Analyze Cardiovascular Risk</button>
+    <a href="/" class="btn btn-ghost">Cancel</a>
+  </div>
+
+</form>
+{% endblock %}
